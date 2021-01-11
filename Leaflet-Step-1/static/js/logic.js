@@ -4,6 +4,8 @@
 // *class activities notes to complete hw
 // *https://leafletjs.com/reference-1.7.1.html#geojson
 // *details for URL paramaters: https://earthquake.usgs.gov/fdsnws/event/1/
+// *Legend code: https://gis.stackexchange.com/questions/193161/add-legend-to-leaflet-map
+
 
 
 // url for earthquake data (for the past 7 days)
@@ -24,16 +26,16 @@ function markerSize(mag){
 function getColor(depth) {
 
   // Conditionals for depth
-  if (depth < 1) {
+  if (depth < 2) {
     return "red";
   }
-  else if (depth < 3) {
+  else if (depth < 4) {
    return "blue";
   }
-  else if (depth < 5) {
+  else if (depth < 6) {
     return "yellow";
   }
-  else if (depth < 10) {
+  else if (depth < 8) {
     return "lime";
   }
   else {
@@ -115,7 +117,7 @@ function createMap(earthquakes) {
     Earthquakes: earthquakes
   };
 
-  // Create our map, giving it the streetmap and earthquakes layers to display on load
+  // Create map, giving it the streetmap and earthquakes layers to display on load
   var myMap = L.map("mapid", {
     center: [37.09, -95.71],
     zoom: 5,
@@ -126,16 +128,25 @@ function createMap(earthquakes) {
 // LEGEND
 // =========================================
 
-// adding Legend for Depth data
-    legend.onAdd = function () {
-    
-        var div = L.DomUtil.create('div', 'info legend')
-        
-        return div;
-    };
-    
-    legend.addTo(myMap);
+  // Set up the legend
+  var legend = L.control({ position: "bottomright" });
+  // Add a legend to the map
+  legend.onAdd = function(myMap){
+    // create div for legend
+    var div = L.DomUtil.create("div", "info legend");
+    grades = [0, 2, 4, 6, 8]
+    labels = ['<strong>Earthquake</strong>'];
 
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < grades.length; i++) {
+      div.innerHTML +=
+          '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+          grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+  }
+
+  return div;
+};
+legend.addTo(myMap);
 
   // Create a layer control
   // Pass in our baseMaps and overlayMaps
