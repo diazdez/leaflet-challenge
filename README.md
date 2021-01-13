@@ -38,3 +38,4 @@ Your first task is to visualize an earthquake data set.
    * Your visualization should look something like the map above.
 
 - - -
+- - -
